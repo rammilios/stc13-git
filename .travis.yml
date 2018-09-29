@@ -1,5 +1,48 @@
 language: java
+sudo: true
 install: true
+
+dist: trusty
 
 jdk:
 - oraclejdk8
+
+os:
+- linux
+
+branches:
+  only:
+  - master
+  - develop
+
+before_install:
+- chmod +x gradlew
+
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    $HOME/.m2/repository
+    $HOME/.sonar/cache
+    $HOME/.gradle
+    .gradle
+
+addons:
+  sonarcloud:
+    organization: "rammilios-github"
+    token:
+      secure: "92b97ce147c06421851e5cb6efc6f3af7f97aecf"
+
+script:
+- ./gradlew clean check sonarqube build
+#  - sonar-scanner
+
+#deploy:
+#  provider: heroku
+#  api_key:
+#    secure: 62c29a72-86e9-48f2-a6e4-86b18c21d3ad
+#  app: inno-test
+#  on:
+#    all_branches: true
